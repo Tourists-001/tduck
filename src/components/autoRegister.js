@@ -11,7 +11,7 @@
 import Vue from 'vue'
 
 const componentsContext = require.context('./', true, /index.(vue|js)$/)
-console.log(componentsContext)
+// console.log(componentsContext)
 
 componentsContext.keys().forEach(file_name => {
   // 获取文件中的 default 模块
