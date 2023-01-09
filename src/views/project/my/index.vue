@@ -136,6 +136,96 @@
           </div>
         </div>
       </div>
+      <div v-if="!projectListLoading && projectList.length == 0">
+        <data-empty />
+      </div>
+    </div>
+    <div v-if="dataShowType == 'table'" class="project-table-view">
+      <el-table
+        :data="projectList"
+        border
+        empty-text="暂无数据"
+        highlight-current-row
+        stripe
+        style="width: 100%"
+      >
+        <el-table-column
+          align="center"
+          label="标题"
+          prop="name"
+          show-overflow-tooltip
+        />
+        <el-table-column
+          align="center"
+          label="描述"
+          prop="description"
+          show-overflow-tooltip
+        >
+          <!-- <template slot-scope="scope">
+          <span v-html="scope.row.description"></span>
+        </template> -->
+        </el-table-column>
+        <el-table-column align="center" label="状态">
+          <template slot-scope="scope">
+            <span v-for="status in projectStatusList" :key="status.code">
+              <span v-if="status.code == scope.row.status">
+                {{ status.name }}
+              </span>
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="创建时间" prop="createTime" />
+        <el-table-column align="center" label="更新时间" prop="updateTime" />
+        <el-table-column label="操作" align="center">
+          <template slot-scope="scope">
+            <el-button
+              type="text"
+              @click="toProjectHandle(scope.row.key, 'editor')"
+            >
+              编辑
+            </el-button>
+            <span>
+              <el-button
+                v-if="scope.row.status != 1"
+                class="green-text-btn"
+                type="text"
+                @click="toProjectHandle(scope.row.key, 'statistics')"
+              >
+                统计
+              </el-button>
+            </span>
+            <el-popconfirm
+              v-if="scope.row.status == 2"
+              title="确定停止收集该项目吗？"
+              @confirm="stopProject(scope.row.key)"
+            >
+              <el-button slot="reference" class="pink-text-btn" type="text">
+                停止
+              </el-button>
+            </el-popconfirm>
+            <el-popconfirm
+              v-if="scope.row.status != 2"
+              title="确定删除该项目吗？"
+              @confirm="deleteProject(scope.row.key)"
+            >
+              <el-button slot="reference" class="pink-text-btn" type="text">
+                删除
+              </el-button>
+            </el-popconfirm>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <div class="project-page-view">
+      <el-pagination
+        v-if="total > 10"
+        :current-page.sync="queryParams.current"
+        :page-size.sync="queryParams.size"
+        :total="total"
+        background
+        layout="total, prev, pager, next"
+        @current-change="queryProjectPage"
+      />
     </div>
   </div>
 </template>
